@@ -952,16 +952,24 @@ td {
     border-bottom: 1px solid var(--md-sys-color-outline-variant);
     box-shadow: 0 18px 40px #0003;
     overflow-y: auto;
+    align-items: stretch;
+    align-content: start;
+    justify-content: stretch;
+    gap: 16px;
   }
   .site-nav[data-open] {
     display: grid;
   }
   .nav-links,
   .header-actions {
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
   .nav-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: var(--md-sys-color-surface-container);
   }
   .select-control select {
