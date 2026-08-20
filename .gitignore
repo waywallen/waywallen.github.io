@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .astro/
+.agents/
+.codex/
 
 # Local environment and generated reports
 .env
