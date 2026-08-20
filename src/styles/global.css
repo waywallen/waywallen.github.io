@@ -700,6 +700,76 @@ h3 {
 .faq-list details p {
   padding: 0 4px 24px;
 }
+.contributor-lead {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+.lead-contributor {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 32px;
+  border-radius: var(--shape-xl);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+.lead-contributor img,
+.contributor-card img {
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--md-sys-color-surface-container-high);
+}
+.lead-contributor > span {
+  display: grid;
+}
+.lead-contributor .eyebrow {
+  margin-bottom: 5px;
+  color: inherit;
+}
+.lead-contributor strong {
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  line-height: 1.2;
+}
+.contributors-section {
+  padding-top: 56px;
+}
+.contributors-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.contributor-card {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--shape-large);
+  background: var(--md-sys-color-surface-container-low);
+}
+.contributor-card:hover {
+  border-color: var(--md-sys-color-primary);
+  background: var(--md-sys-color-surface-container);
+}
+.contributor-card > span {
+  min-width: 0;
+  display: grid;
+}
+.contributor-card strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.contributor-card small {
+  color: var(--md-sys-color-on-surface-variant);
+}
+.contributors-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
 .compatibility {
   padding-top: 40px;
 }
@@ -910,6 +980,9 @@ td {
   .card-grid {
     grid-template-columns: 1fr 1fr;
   }
+  .contributors-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .docs-layout {
     grid-template-columns: 1fr;
     gap: 30px;
@@ -935,6 +1008,20 @@ td {
   }
   .section {
     padding: 52px 0;
+  }
+  .contributors-grid {
+    grid-template-columns: 1fr;
+  }
+  .lead-contributor {
+    align-items: flex-start;
+    padding: 24px;
+  }
+  .lead-contributor img {
+    width: 72px;
+    height: 72px;
+  }
+  .contributors-actions .button {
+    width: 100%;
   }
   .header-inner {
     min-height: 68px;

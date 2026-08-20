@@ -19,6 +19,7 @@ export const routeSlugs = [
   'download',
   'screenshots',
   'plugins',
+  'contributors',
   'docs',
   'docs/installation',
   'docs/desktop-integration',

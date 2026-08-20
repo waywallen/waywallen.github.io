@@ -14,6 +14,16 @@ type Copy = {
   footer: string;
   support: { sponsor: string; contribute: string; reportBug: string };
   credits: { developer: string; website: string };
+  contributors: {
+    title: string;
+    description: string;
+    lead: string;
+    leadBody: string;
+    community: string;
+    contributionForms: [string, string, string];
+    action: string;
+    github: string;
+  };
   pages: Record<RouteSlug, { title: string; description: string }>;
   hero: {
     eyebrow: string;
@@ -82,6 +92,17 @@ const en: Copy = {
     developer: 'Waywallen by',
     website: 'Website by',
   },
+  contributors: {
+    title: 'Contributors',
+    description:
+      'Waywallen is shaped by everyone who contributes code, fixes and ideas.',
+    lead: 'Project developer',
+    leadBody: 'Creator and lead developer of Waywallen.',
+    community: 'Community contributors',
+    contributionForms: ['contribution', 'contributions', 'contributions'],
+    action: 'Contribute to Waywallen',
+    github: 'View the complete graph on GitHub',
+  },
   pages: {
     '': {
       title: 'Dynamic wallpapers for Linux',
@@ -107,6 +128,11 @@ const en: Copy = {
       title: 'Plugins',
       description:
         'Use Waywallen’s built-in plugins and the external Wallpaper Engine component.',
+    },
+    contributors: {
+      title: 'Contributors',
+      description:
+        'Meet the people who build, improve and support the Waywallen project.',
     },
     docs: {
       title: 'Documentation',
@@ -354,6 +380,17 @@ const ru: Copy = {
     developer: 'Waywallen разработан',
     website: 'Сайт создан',
   },
+  contributors: {
+    title: 'Участники',
+    description:
+      'Waywallen развивается благодаря всем, кто вносит код, исправления и идеи.',
+    lead: 'Разработчик проекта',
+    leadBody: 'Создатель и ведущий разработчик Waywallen.',
+    community: 'Участники сообщества',
+    contributionForms: ['вклад', 'вклада', 'вкладов'],
+    action: 'Внести вклад в Waywallen',
+    github: 'Полный граф участников на GitHub',
+  },
   pages: {
     '': {
       title: 'Динамические обои для Linux',
@@ -378,6 +415,11 @@ const ru: Copy = {
       title: 'Плагины',
       description:
         'Используйте встроенные плагины Waywallen и внешний компонент для Wallpaper Engine.',
+    },
+    contributors: {
+      title: 'Участники',
+      description:
+        'Люди, которые разрабатывают, улучшают и поддерживают Waywallen.',
     },
     docs: {
       title: 'Документация',
@@ -601,6 +643,16 @@ const zh: Copy = {
     developer: 'Waywallen 开发者',
     website: '网站作者',
   },
+  contributors: {
+    title: '贡献者',
+    description: '每一份代码、修复和想法都在推动 Waywallen 前进。',
+    lead: '项目开发者',
+    leadBody: 'Waywallen 的创建者和主要开发者。',
+    community: '社区贡献者',
+    contributionForms: ['次贡献', '次贡献', '次贡献'],
+    action: '为 Waywallen 做贡献',
+    github: '在 GitHub 查看完整贡献图',
+  },
   pages: {
     '': {
       title: 'Linux 动态壁纸',
@@ -622,6 +674,10 @@ const zh: Copy = {
     plugins: {
       title: '插件',
       description: '使用 Waywallen 内置插件和外置 Wallpaper Engine 组件。',
+    },
+    contributors: {
+      title: '贡献者',
+      description: '认识开发、改进和支持 Waywallen 项目的人们。',
     },
     docs: {
       title: '文档',

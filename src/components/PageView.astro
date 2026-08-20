@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getContributors } from '../data/contributors';
 import { content } from '../i18n/content';
 import { route, type Locale, type RouteSlug } from '../i18n/config';
 interface Props {
@@ -9,6 +10,12 @@ interface Props {
 const { locale, slug } = Astro.props;
 const copy = content[locale];
 const page = copy.pages[slug];
+const contributors = slug === 'contributors' ? await getContributors() : [];
+const contributionLabel = (count: number) => {
+  const category = new Intl.PluralRules(locale).select(count);
+  const index = category === 'one' ? 0 : category === 'few' ? 1 : 2;
+  return copy.contributors.contributionForms[index];
+};
 const screenshots = [
   '/images/screenshots/main-page.webp',
   '/images/screenshots/displays-page.webp',
@@ -350,6 +357,84 @@ const docKey =
               </details>
             ))}
           </section>
+        )}
+        {slug === 'contributors' && (
+          <>
+            <section class="section contributor-lead">
+              <a
+                class="lead-contributor"
+                href="https://github.com/hypengw"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="https://avatars.githubusercontent.com/u/102276135?v=4"
+                  width="112"
+                  height="112"
+                  alt=""
+                />
+                <span>
+                  <span class="eyebrow">{copy.contributors.lead}</span>
+                  <strong>hypengw</strong>
+                  <span>{copy.contributors.leadBody}</span>
+                </span>
+              </a>
+            </section>
+            <section class="section contributors-section">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Open source</p>
+                  <h2>{copy.contributors.community}</h2>
+                </div>
+                <p>{copy.contributors.description}</p>
+              </div>
+              <div class="contributors-grid">
+                {contributors
+                  .filter((contributor) => contributor.login !== 'hypengw')
+                  .map((contributor) => (
+                    <a
+                      class="contributor-card"
+                      href={contributor.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={contributor.avatar_url}
+                        width="72"
+                        height="72"
+                        alt=""
+                        loading="lazy"
+                      />
+                      <span>
+                        <strong>{contributor.login}</strong>
+                        <small>
+                          {contributor.contributions}{' '}
+                          {contributionLabel(contributor.contributions)}
+                        </small>
+                      </span>
+                    </a>
+                  ))}
+              </div>
+              <div class="contributors-actions">
+                <a
+                  class="button primary"
+                  href="https://github.com/waywallen/waywallen/compare"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {copy.contributors.action}
+                </a>
+                <a
+                  class="button tonal"
+                  href="https://github.com/waywallen/waywallen/graphs/contributors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {copy.contributors.github}
+                </a>
+              </div>
+            </section>
+          </>
         )}
         {(slug === 'features' || slug === 'docs/desktop-integration') && (
           <section
