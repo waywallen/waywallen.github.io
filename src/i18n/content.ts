@@ -30,7 +30,6 @@ type Copy = {
     gallery: string;
     galleryBody: string;
     galleryAction: string;
-    explore: string;
   };
   featureText: [string, string][];
   screenshotText: [string, string][];
@@ -158,7 +157,6 @@ const en: Copy = {
     galleryBody:
       'Manage wallpapers, displays and renderer health without leaving the app.',
     galleryAction: 'View all screenshots',
-    explore: 'Explore Waywallen',
   },
   featureText: [
     [
@@ -424,7 +422,6 @@ const ru: Copy = {
     gallery: 'Интерфейс Waywallen',
     galleryBody: 'Управляйте обоями, дисплеями и состоянием рендереров.',
     galleryAction: 'Посмотреть все скриншоты',
-    explore: 'Подробнее о Waywallen',
   },
   featureText: [
     ['Динамические обои', 'Изображения и видео в единой библиотеке обоев.'],
@@ -663,7 +660,6 @@ const zh: Copy = {
     gallery: 'Waywallen 界面',
     galleryBody: '在应用中管理壁纸、显示器和渲染器状态。',
     galleryAction: '查看全部界面截图',
-    explore: '探索 Waywallen',
   },
   featureText: [
     ['动态壁纸', '在同一个壁纸库中整理和显示图片与视频。'],
