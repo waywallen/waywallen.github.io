@@ -1,3 +1,5 @@
+import { githubAvatar, githubProfile, links } from '../config/site';
+
 export type Contributor = {
   login: string;
   avatar_url: string;
@@ -26,8 +28,8 @@ const logins = [
 
 const fallback: Contributor[] = logins.map(([login, id, contributions]) => ({
   login,
-  avatar_url: `https://avatars.githubusercontent.com/u/${id}?v=4`,
-  html_url: `https://github.com/${login}`,
+  avatar_url: githubAvatar(id),
+  html_url: githubProfile(login),
   contributions,
 }));
 
@@ -37,13 +39,10 @@ export async function getContributors(): Promise<Contributor[]> {
   if (cached) return cached;
 
   try {
-    const response = await fetch(
-      'https://api.github.com/repos/waywallen/waywallen/contributors?per_page=100&anon=1',
-      {
-        headers: { Accept: 'application/vnd.github+json' },
-        signal: AbortSignal.timeout(5000),
-      },
-    );
+    const response = await fetch(links.contributorsApi, {
+      headers: { Accept: 'application/vnd.github+json' },
+      signal: AbortSignal.timeout(5000),
+    });
     if (!response.ok) throw new Error(`GitHub API returned ${response.status}`);
 
     const data = (await response.json()) as Contributor[];

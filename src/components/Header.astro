@@ -1,5 +1,6 @@
 ---
 import { content } from '../i18n/content';
+import { assets, links } from '../config/site';
 import {
   localeNames,
   locales,
@@ -19,12 +20,9 @@ const nav = ['features', 'screenshots', 'plugins', 'docs'] as const;
 <header class="site-header">
   <div class="header-inner">
     <a class="brand" href={route(locale)} aria-label="Waywallen home"
-      ><img
-        src="/images/logo/waywallen.svg"
-        alt=""
-        width="36"
-        height="36"
-      /><span>Waywallen</span></a
+      ><img src={assets.logo} alt="" width="36" height="36" /><span
+        >Waywallen</span
+      ></a
     >
     <button
       class="icon-button menu-button"
@@ -86,7 +84,7 @@ const nav = ['features', 'screenshots', 'plugins', 'docs'] as const;
         </button>
         <a
           class="text-action"
-          href="https://github.com/waywallen/waywallen"
+          href={links.repository}
           target="_blank"
           rel="noopener noreferrer">{copy.github}</a
         >

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { content } from '../i18n/content';
+import { route } from '../i18n/config';
 const copy = content.en;
 ---
 
@@ -8,6 +9,6 @@ const copy = content.en;
   ><section class="not-found section">
     <p class="error-code">404</p><h1>{copy.notFound.title}</h1><p>
       {copy.notFound.body}
-    </p><a class="button primary" href="/">{copy.notFound.action}</a>
+    </p><a class="button primary" href={route('en')}>{copy.notFound.action}</a>
   </section></BaseLayout
 >

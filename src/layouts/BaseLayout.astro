@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { assets } from '../config/site';
 import { content } from '../i18n/content';
 import {
   htmlLang,
@@ -21,7 +22,7 @@ const page = copy.pages[slug];
 const canonical = new URL(route(locale, slug), Astro.site);
 const title =
   slug === '' ? `Waywallen — ${page.title}` : `${page.title} — Waywallen`;
-const ogImage = new URL('/images/social/waywallen-og.svg', Astro.site);
+const ogImage = new URL(assets.socialImage, Astro.site);
 ---
 
 <!doctype html>
@@ -31,36 +32,6 @@ const ogImage = new URL('/images/social/waywallen-og.svg', Astro.site);
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#6750a4" />
-    <script is:inline>
-      (() => {
-        try {
-          if (
-            document.documentElement.lang !== 'en' ||
-            location.pathname !== '/'
-          )
-            return;
-          const saved = localStorage.getItem('waywallen-locale');
-          const preferred =
-            saved ||
-            navigator.languages
-              .map((language) => language.toLowerCase())
-              .find(
-                (language) =>
-                  language.startsWith('ru') || language.startsWith('zh'),
-              );
-          const locale = preferred?.startsWith('ru')
-            ? 'ru'
-            : preferred?.startsWith('zh')
-              ? 'zh-cn'
-              : 'en';
-          if (locale !== 'en') {
-            location.replace(
-              '/' + locale + '/' + location.search + location.hash,
-            );
-          }
-        } catch {}
-      })();
-    </script>
     <script is:inline>
       (() => {
         try {
@@ -91,7 +62,44 @@ const ogImage = new URL('/images/social/waywallen-og.svg', Astro.site);
       hreflang="x-default"
       href={new URL(route('en', slug), Astro.site)}
     />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (() => {
+        try {
+          if (
+            document.documentElement.lang !== 'en' ||
+            location.pathname !== '/'
+          )
+            return;
+          const saved = localStorage.getItem('waywallen-locale');
+          const preferred =
+            saved ||
+            navigator.languages
+              .map((language) => language.toLowerCase())
+              .find(
+                (language) =>
+                  language.startsWith('ru') || language.startsWith('zh'),
+              );
+          const locale = preferred?.startsWith('ru')
+            ? 'ru'
+            : preferred?.startsWith('zh')
+              ? 'zh-cn'
+              : 'en';
+          if (locale !== 'en') {
+            const hreflang = locale === 'zh-cn' ? 'zh-CN' : locale;
+            const alternate = document.querySelector(
+              `link[rel="alternate"][hreflang="${hreflang}"]`,
+            );
+            if (alternate instanceof HTMLLinkElement) {
+              const target = new URL(alternate.href);
+              location.replace(
+                target.pathname + location.search + location.hash,
+              );
+            }
+          }
+        } catch {}
+      })();
+    </script>
+    <link rel="icon" href={assets.favicon} type="image/svg+xml" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Waywallen" />
     <meta property="og:title" content={title} />
