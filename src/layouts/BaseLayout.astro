@@ -34,9 +34,13 @@ const ogImage = new URL('/images/social/waywallen-og.svg', Astro.site);
     <script is:inline>
       (() => {
         try {
-          const t = localStorage.getItem('waywallen-theme');
-          if (t === 'light' || t === 'dark')
-            document.documentElement.dataset.theme = t;
+          const saved = localStorage.getItem('waywallen-theme');
+          document.documentElement.dataset.theme =
+            saved === 'light' || saved === 'dark'
+              ? saved
+              : matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
         } catch {}
       })();
     </script>
@@ -86,24 +90,37 @@ const ogImage = new URL('/images/social/waywallen-og.svg', Astro.site);
     <script>
       const root = document.documentElement;
       const media = matchMedia('(prefers-color-scheme: dark)');
-      const select = document.querySelector<HTMLSelectElement>(
-        '[data-theme-select]',
+      const themeButton = document.querySelector<HTMLButtonElement>(
+        '[data-theme-toggle]',
       );
+      const themes = ['light', 'dark'] as const;
       const apply = (theme: string) => {
         root.dataset.theme = theme;
-        root.style.colorScheme =
-          theme === 'system' ? (media.matches ? 'dark' : 'light') : theme;
+        root.style.colorScheme = theme;
       };
-      const saved = localStorage.getItem('waywallen-theme') || 'system';
-      apply(saved);
-      if (select) select.value = saved;
-      select?.addEventListener('change', () => {
-        localStorage.setItem('waywallen-theme', select.value);
-        apply(select.value);
-      });
-      media.addEventListener('change', () => {
-        if ((localStorage.getItem('waywallen-theme') || 'system') === 'system')
-          apply('system');
+      const updateButton = (theme: string) => {
+        if (!themeButton) return;
+        const labels = JSON.parse(themeButton.dataset.themeOptions || '[]');
+        const index = themes.indexOf(theme as (typeof themes)[number]);
+        const label = `${themeButton.dataset.themeLabel}: ${labels[index + 1]}`;
+        themeButton.setAttribute('aria-label', label);
+        themeButton.title = label;
+      };
+      const saved = localStorage.getItem('waywallen-theme');
+      const initial =
+        saved === 'light' || saved === 'dark'
+          ? saved
+          : media.matches
+            ? 'dark'
+            : 'light';
+      apply(initial);
+      updateButton(initial);
+      themeButton?.addEventListener('click', () => {
+        const current = root.dataset.theme || initial;
+        const next = current === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('waywallen-theme', next);
+        apply(next);
+        updateButton(next);
       });
       const toggle =
         document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
@@ -112,6 +129,14 @@ const ogImage = new URL('/images/social/waywallen-og.svg', Astro.site);
         const open = toggle.getAttribute('aria-expanded') !== 'true';
         toggle.setAttribute('aria-expanded', String(open));
         nav?.toggleAttribute('data-open', open);
+        document.body.classList.toggle('menu-open', open);
+      });
+      addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape' || !nav?.hasAttribute('data-open')) return;
+        toggle?.setAttribute('aria-expanded', 'false');
+        nav.removeAttribute('data-open');
+        document.body.classList.remove('menu-open');
+        toggle?.focus();
       });
     </script>
   </body>

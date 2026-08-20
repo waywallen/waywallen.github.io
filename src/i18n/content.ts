@@ -12,6 +12,8 @@ type Copy = {
   themes: [string, string, string];
   github: string;
   footer: string;
+  support: { sponsor: string; contribute: string; reportBug: string };
+  credits: { developer: string; website: string };
   pages: Record<RouteSlug, { title: string; description: string }>;
   hero: {
     eyebrow: string;
@@ -27,12 +29,14 @@ type Copy = {
     desktopsBody: string;
     gallery: string;
     galleryBody: string;
+    galleryAction: string;
     explore: string;
   };
   featureText: [string, string][];
   screenshotText: [string, string][];
   downloadText: [string, string, string][];
   pluginText: [string, string][];
+  pluginLabels: [string, string];
   docsCards: [string, string, RouteSlug][];
   integration: {
     desktop: string;
@@ -41,6 +45,7 @@ type Copy = {
     pause: string;
     yes: string;
     no: string;
+    scrollHint: string;
   };
   doc: {
     installation: string[];
@@ -48,6 +53,7 @@ type Copy = {
     wallpaper: string[];
     troubleshooting: string[];
   };
+  troubleshootingDetails: [string, string][];
   faq: [string, string][];
   notFound: { title: string; body: string; action: string };
 };
@@ -68,6 +74,15 @@ const en: Copy = {
   themes: ['System', 'Light', 'Dark'],
   github: 'GitHub',
   footer: 'An open-source dynamic wallpaper solution for Linux.',
+  support: {
+    sponsor: 'Sponsor on Ko-fi',
+    contribute: 'Contribute code',
+    reportBug: 'Report a bug',
+  },
+  credits: {
+    developer: 'Waywallen by',
+    website: 'Website by',
+  },
   pages: {
     '': {
       title: 'Dynamic wallpapers for Linux',
@@ -87,12 +102,12 @@ const en: Copy = {
     screenshots: {
       title: 'Screenshots',
       description:
-        'See the real Waywallen interface for wallpapers, displays and system status.',
+        'Explore the Waywallen interface for wallpapers, displays and system status.',
     },
     plugins: {
       title: 'Plugins',
       description:
-        'Extend Waywallen with official wallpaper plugins and open-wallpaper-engine.',
+        'Use Waywallen’s built-in plugins and the external Wallpaper Engine component.',
     },
     docs: {
       title: 'Documentation',
@@ -128,7 +143,7 @@ const en: Copy = {
   hero: {
     eyebrow: 'Open source · Linux',
     title: 'Your desktop, in motion.',
-    body: 'Waywallen brings dynamic wallpapers to Linux with native desktop integration, a focused Material interface and an extensible plugin system.',
+    body: 'Waywallen brings dynamic wallpapers to Linux with native desktop integration, a focused Material interface and an extensible plugin system. The project began as a Wallpaper Engine plugin for KDE.',
     download: 'Download Waywallen',
     github: 'View on GitHub',
   },
@@ -139,9 +154,10 @@ const en: Copy = {
     desktops: 'At home on your desktop',
     desktopsBody:
       'Dedicated integrations connect Waywallen output to popular Linux desktop shells.',
-    gallery: 'The real Waywallen interface',
+    gallery: 'Waywallen interface',
     galleryBody:
       'Manage wallpapers, displays and renderer health without leaving the app.',
+    galleryAction: 'View all screenshots',
     explore: 'Explore Waywallen',
   },
   featureText: [
@@ -155,15 +171,15 @@ const en: Copy = {
     ],
     [
       'Wallpaper Engine compatibility',
-      'The third-party open-wallpaper-engine plugin adds Scene and Web wallpaper support.',
+      'The external open-wallpaper-engine component adds Scene and Web wallpaper support.',
     ],
     [
-      'Discover with Wallhaven',
-      'The official Wallhaven plugin brings remote wallpaper discovery into Waywallen.',
+      'Wallhaven catalog',
+      'Search, filter and download wallpapers from Wallhaven without leaving Discover.',
     ],
     [
       'Plugin architecture',
-      'Install official and third-party wallpaper renderers from the app’s plugin page.',
+      'Use built-in renderers or install compatible external components from the Plugins page.',
     ],
     [
       'Desktop integration',
@@ -202,20 +218,24 @@ const en: Copy = {
     ],
   ],
   pluginText: [
-    ['Image plugin', 'Official renderer for image wallpapers.'],
     [
-      'Video plugin',
-      'Official video renderer with Vulkan and VA-API hardware decoding.',
+      'Image wallpapers',
+      'Adds local image folders to the library, scans nested directories and renders PNG, JPEG, WebP, AVIF, GIF and other common formats.',
     ],
     [
-      'Wallhaven plugin',
-      'Official integration for discovering wallpapers from Wallhaven.',
+      'Video wallpapers',
+      'Adds video files to the library with looping, audio controls, resolution limits and Vulkan, VA-API or software decoding.',
     ],
     [
-      'open-wallpaper-engine',
-      'Third-party plugin providing Wallpaper Engine Scene and Web support.',
+      'Wallhaven catalog',
+      'Browse and search Wallhaven in Discover, filter by topic, resolution and content rating, inspect details and download wallpapers into Waywallen.',
+    ],
+    [
+      'Wallpaper Engine integration',
+      'External Waywallen component for installed Scene and Web projects, Steam Workshop browsing and subscription management. Steam downloads subscribed items.',
     ],
   ],
+  pluginLabels: ['Built in', 'External'],
   docsCards: [
     [
       'Installation',
@@ -229,7 +249,7 @@ const en: Copy = {
     ],
     [
       'Wallpaper Engine',
-      'Install and use the third-party renderer.',
+      'Install and use the external component.',
       'docs/wallpaper-engine',
     ],
     [
@@ -245,6 +265,7 @@ const en: Copy = {
     pause: 'Auto pause',
     yes: 'Supported',
     no: 'Not supported',
+    scrollHint: 'Scroll horizontally to see all columns',
   },
   doc: {
     installation: [
@@ -265,10 +286,26 @@ const en: Copy = {
     troubleshooting: [
       'NVIDIA Web wallpapers: disable shared_texture_enabled in the web renderer settings.',
       'NVIDIA video decoding: use nvidia-vaapi-driver to expose NVDEC through VA-API; there is no dedicated NVDEC backend.',
-      "Flatpak media metadata: grant --talk-name='org.mpris.MediaPlayer2.*' to org.waywallen.waywallen.",
-      'Logs: stop the daemon, then run Waywallen with RSTD_LOG=debug and RUST_LOG=debug,zbus=warn.',
     ],
   },
+  troubleshootingDetails: [
+    [
+      'Flatpak media permission',
+      'Flatpak needs access to the MPRIS D-Bus service to read information about the currently playing track. Grant the permission for the current user:',
+    ],
+    [
+      'Collect logs',
+      'First stop the running Waywallen daemon. Then enable detailed Rust and zbus logging and launch Waywallen from the same terminal:',
+    ],
+    [
+      'Debug inside Flatpak',
+      'Install the matching Flatpak debug package, open a development shell and start Waywallen with GDB. Decline debuginfod if prompted, reproduce the problem, then request a backtrace:',
+    ],
+    [
+      'Debug a core dump',
+      'Alternatively, export an existing core dump and open it with the Waywallen symbols from the Flatpak development environment:',
+    ],
+  ],
   faq: [
     [
       'How does hardware video decoding work?',
@@ -276,11 +313,11 @@ const en: Copy = {
     ],
     [
       'Does Waywallen support Wallpaper Engine wallpapers?',
-      'Yes, through the third-party open-wallpaper-engine plugin, which provides Scene and Web support.',
+      'Yes. The external open-wallpaper-engine component, maintained alongside Waywallen, provides Scene and Web support.',
     ],
     [
-      'How do I install a third-party plugin?',
-      'Download its ZIP archive and install it from the Plugins page. Waywallen will then notify you about plugin updates.',
+      'How do I install an external component?',
+      'Download its ZIP archive and install it from the Plugins page. Waywallen will then notify you about updates.',
     ],
     [
       'Where can I get logs?',
@@ -310,6 +347,15 @@ const ru: Copy = {
   theme: 'Тема',
   themes: ['Системная', 'Светлая', 'Тёмная'],
   footer: 'Open-source решение для динамических обоев в Linux.',
+  support: {
+    sponsor: 'Поддержать на Ko-fi',
+    contribute: 'Внести вклад в код',
+    reportBug: 'Сообщить об ошибке',
+  },
+  credits: {
+    developer: 'Waywallen разработан',
+    website: 'Сайт создан',
+  },
   pages: {
     '': {
       title: 'Динамические обои для Linux',
@@ -328,13 +374,12 @@ const ru: Copy = {
     },
     screenshots: {
       title: 'Скриншоты',
-      description:
-        'Настоящий интерфейс Waywallen: обои, дисплеи и состояние системы.',
+      description: 'Интерфейс Waywallen: обои, дисплеи и состояние системы.',
     },
     plugins: {
       title: 'Плагины',
       description:
-        'Расширяйте Waywallen официальными плагинами и open-wallpaper-engine.',
+        'Используйте встроенные плагины Waywallen и внешний компонент для Wallpaper Engine.',
     },
     docs: {
       title: 'Документация',
@@ -346,7 +391,7 @@ const ru: Copy = {
         'Выберите AppImage, Flatpak или сборку Waywallen из исходников.',
     },
     'docs/desktop-integration': {
-      title: 'Интеграция с рабочим столом',
+      title: 'Интеграция с окружением',
       description: 'Подключите Waywallen к KDE Plasma, GNOME и layer-shell.',
     },
     'docs/wallpaper-engine': {
@@ -364,20 +409,21 @@ const ru: Copy = {
   },
   hero: {
     eyebrow: 'Open source · Linux',
-    title: 'Ваш рабочий стол — в движении.',
-    body: 'Waywallen добавляет динамические обои в Linux: нативная интеграция, лаконичный Material-интерфейс и расширяемая система плагинов.',
+    title: 'Ваш рабочий стол в движении.',
+    body: 'Waywallen добавляет динамические обои в Linux: нативная интеграция, лаконичный Material-интерфейс и расширяемая система плагинов. Проект начинался как плагин Wallpaper Engine для KDE.',
     download: 'Скачать Waywallen',
     github: 'Открыть GitHub',
   },
   sections: {
     highlights: 'Создан для динамичного рабочего стола',
     highlightsBody:
-      'Изображения, видео и сторонние интеграции в одной библиотеке.',
+      'Изображения, видео и дополнительные интеграции в одной библиотеке.',
     desktops: 'Работает в вашем окружении',
     desktopsBody:
       'Интеграции подключают вывод Waywallen к популярным оболочкам Linux.',
-    gallery: 'Настоящий интерфейс Waywallen',
+    gallery: 'Интерфейс Waywallen',
     galleryBody: 'Управляйте обоями, дисплеями и состоянием рендереров.',
+    galleryAction: 'Посмотреть все скриншоты',
     explore: 'Подробнее о Waywallen',
   },
   featureText: [
@@ -388,15 +434,15 @@ const ru: Copy = {
     ],
     [
       'Совместимость с Wallpaper Engine',
-      'Сторонний open-wallpaper-engine добавляет Scene и Web обои.',
+      'Внешний компонент open-wallpaper-engine добавляет Scene- и Web-обои.',
     ],
     [
-      'Поиск в Wallhaven',
-      'Официальный плагин добавляет поиск удалённых обоев.',
+      'Каталог Wallhaven',
+      'Ищите, фильтруйте и скачивайте обои с Wallhaven прямо в разделе «Обзор».',
     ],
     [
       'Система плагинов',
-      'Устанавливайте официальные и сторонние рендереры из приложения.',
+      'Используйте встроенные рендереры или устанавливайте совместимые внешние компоненты на странице плагинов.',
     ],
     [
       'Интеграция с Linux',
@@ -429,14 +475,24 @@ const ru: Copy = {
     ],
   ],
   pluginText: [
-    ['Плагин изображений', 'Официальный рендерер изображений.'],
-    ['Плагин видео', 'Vulkan и VA-API аппаратное декодирование.'],
-    ['Плагин Wallhaven', 'Официальная интеграция поиска обоев.'],
     [
-      'open-wallpaper-engine',
-      'Сторонний плагин для Wallpaper Engine Scene и Web.',
+      'Обои из изображений',
+      'Добавляет локальные папки с изображениями в библиотеку, сканирует вложенные каталоги и отображает PNG, JPEG, WebP, AVIF, GIF и другие распространённые форматы.',
+    ],
+    [
+      'Видеообои',
+      'Добавляет видеофайлы в библиотеку: зацикливание, управление звуком, ограничение разрешения и декодирование через Vulkan, VA-API либо программно.',
+    ],
+    [
+      'Каталог Wallhaven',
+      'Позволяет искать и просматривать Wallhaven в разделе «Обзор», фильтровать по темам, разрешению и рейтингу содержимого, изучать сведения и скачивать обои в Waywallen.',
+    ],
+    [
+      'Интеграция с Wallpaper Engine',
+      'Внешний компонент Waywallen для установленных Scene- и Web-проектов, просмотра Steam Workshop и управления подписками. Подписанные элементы загружает Steam.',
     ],
   ],
+  pluginLabels: ['Встроенный', 'Внешний'],
   docsCards: [
     ['Установка', 'AppImage, Flatpak и сборка.', 'docs/installation'],
     [
@@ -446,7 +502,7 @@ const ru: Copy = {
     ],
     [
       'Wallpaper Engine',
-      'Установка стороннего рендерера.',
+      'Установка внешнего компонента.',
       'docs/wallpaper-engine',
     ],
     ['Неполадки', 'NVIDIA, Flatpak, логи и отладка.', 'docs/troubleshooting'],
@@ -458,6 +514,7 @@ const ru: Copy = {
     pause: 'Автопауза',
     yes: 'Поддерживается',
     no: 'Не поддерживается',
+    scrollHint: 'Прокрутите таблицу по горизонтали, чтобы увидеть все столбцы',
   },
   doc: {
     installation: [
@@ -478,10 +535,26 @@ const ru: Copy = {
     troubleshooting: [
       'Web-обои на NVIDIA: отключите shared_texture_enabled в настройках веб-рендерера.',
       'Декодирование на NVIDIA: используйте nvidia-vaapi-driver для NVDEC через VA-API; отдельного backend NVDEC нет.',
-      "Метаданные плеера во Flatpak: выдайте org.waywallen.waywallen разрешение --talk-name='org.mpris.MediaPlayer2.*'.",
-      'Логи: остановите демон и запустите Waywallen с RSTD_LOG=debug и RUST_LOG=debug,zbus=warn.',
     ],
   },
+  troubleshootingDetails: [
+    [
+      'Доступ Flatpak к медиаплееру',
+      'Для чтения сведений о текущем треке Flatpak требуется доступ к службе MPRIS через D-Bus. Выдайте разрешение текущему пользователю:',
+    ],
+    [
+      'Сбор логов',
+      'Сначала остановите запущенный демон Waywallen. Затем включите подробные логи Rust и zbus и запустите Waywallen из того же терминала:',
+    ],
+    [
+      'Отладка внутри Flatpak',
+      'Установите соответствующий Debug-пакет Flatpak, откройте среду разработки и запустите Waywallen через GDB. При запросе откажитесь от debuginfod, воспроизведите проблему и получите backtrace:',
+    ],
+    [
+      'Отладка дампа памяти',
+      'Также можно сохранить существующий core dump и открыть его с символами Waywallen в среде разработки Flatpak:',
+    ],
+  ],
   faq: [
     [
       'Как работает аппаратное декодирование видео?',
@@ -489,10 +562,10 @@ const ru: Copy = {
     ],
     [
       'Поддерживаются ли обои Wallpaper Engine?',
-      'Да, через сторонний плагин open-wallpaper-engine с поддержкой Scene и Web.',
+      'Да. Внешний компонент open-wallpaper-engine, который развивается вместе с Waywallen, поддерживает Scene- и Web-обои.',
     ],
     [
-      'Как установить сторонний плагин?',
+      'Как установить внешний компонент?',
       'Скачайте ZIP и установите его на странице плагинов. Waywallen будет уведомлять об обновлениях.',
     ],
     [
@@ -522,6 +595,15 @@ const zh: Copy = {
   theme: '主题',
   themes: ['跟随系统', '浅色', '深色'],
   footer: '面向 Linux 的开源动态壁纸解决方案。',
+  support: {
+    sponsor: '在 Ko-fi 上赞助',
+    contribute: '贡献代码',
+    reportBug: '报告问题',
+  },
+  credits: {
+    developer: 'Waywallen 开发者',
+    website: '网站作者',
+  },
   pages: {
     '': {
       title: 'Linux 动态壁纸',
@@ -542,7 +624,7 @@ const zh: Copy = {
     },
     plugins: {
       title: '插件',
-      description: '使用官方插件和 open-wallpaper-engine 扩展 Waywallen。',
+      description: '使用 Waywallen 内置插件和外置 Wallpaper Engine 组件。',
     },
     docs: {
       title: '文档',
@@ -569,7 +651,7 @@ const zh: Copy = {
   hero: {
     eyebrow: '开源 · Linux',
     title: '让桌面动起来。',
-    body: 'Waywallen 为 Linux 带来动态壁纸、原生桌面集成、简洁的 Material 界面和可扩展插件系统。',
+    body: 'Waywallen 为 Linux 带来动态壁纸、原生桌面集成、简洁的 Material 界面和可扩展插件系统。该项目最初是 KDE 的 Wallpaper Engine 插件。',
     download: '下载 Waywallen',
     github: '在 GitHub 查看',
   },
@@ -578,8 +660,9 @@ const zh: Copy = {
     highlightsBody: '图片、视频和社区集成都在同一个壁纸库中。',
     desktops: '融入你的桌面',
     desktopsBody: '专用集成将 Waywallen 输出连接到常见 Linux 桌面。',
-    gallery: '真实的 Waywallen 界面',
+    gallery: 'Waywallen 界面',
     galleryBody: '在应用中管理壁纸、显示器和渲染器状态。',
+    galleryAction: '查看全部界面截图',
     explore: '探索 Waywallen',
   },
   featureText: [
@@ -587,10 +670,10 @@ const zh: Copy = {
     ['硬件视频解码', '视频插件支持 Vulkan、VA-API 和软件回退。'],
     [
       'Wallpaper Engine 兼容',
-      'open-wallpaper-engine 插件添加 Scene 和 Web 支持。',
+      '外置 open-wallpaper-engine 组件添加 Scene 和 Web 壁纸支持。',
     ],
-    ['Wallhaven 浏览', '官方插件将远程壁纸发现带入 Waywallen。'],
-    ['插件架构', '从应用插件页安装官方和第三方渲染器。'],
+    ['Wallhaven 图库', '直接在“发现”中搜索、筛选并下载 Wallhaven 壁纸。'],
+    ['插件架构', '使用内置渲染器，或从插件页安装兼容的外置组件。'],
     ['桌面集成', '通过 KDE Plasma、GNOME 或 Wayland layer-shell 连接。'],
   ],
   screenshotText: [
@@ -604,14 +687,24 @@ const zh: Copy = {
     ['从源码构建', '按照项目维护的构建指南操作。', '阅读 BUILD.md'],
   ],
   pluginText: [
-    ['图片插件', '官方图片壁纸渲染器。'],
-    ['视频插件', '支持 Vulkan 和 VA-API 硬件解码。'],
-    ['Wallhaven 插件', '用于发现 Wallhaven 壁纸的官方集成。'],
     [
-      'open-wallpaper-engine',
-      '提供 Wallpaper Engine Scene 和 Web 的第三方插件。',
+      '图片壁纸',
+      '将本地图片文件夹加入壁纸库，扫描嵌套目录，并渲染 PNG、JPEG、WebP、AVIF、GIF 等常见格式。',
+    ],
+    [
+      '视频壁纸',
+      '将视频加入壁纸库，提供循环播放、音频控制、分辨率限制，以及 Vulkan、VA-API 或软件解码。',
+    ],
+    [
+      'Wallhaven 图库',
+      '在“发现”中浏览和搜索 Wallhaven，按主题、分辨率和内容分级筛选，查看详情并下载到 Waywallen。',
+    ],
+    [
+      'Wallpaper Engine 集成',
+      'Waywallen 的外置组件，可使用已安装的 Scene 和 Web 项目、浏览 Steam Workshop 并管理订阅；订阅内容由 Steam 下载。',
     ],
   ],
+  pluginLabels: ['内置', '外置'],
   docsCards: [
     ['安装', 'AppImage、Flatpak 和源码构建。', 'docs/installation'],
     [
@@ -619,7 +712,7 @@ const zh: Copy = {
       'KDE Plasma、GNOME 和 layer-shell。',
       'docs/desktop-integration',
     ],
-    ['Wallpaper Engine', '安装并使用第三方渲染器。', 'docs/wallpaper-engine'],
+    ['Wallpaper Engine', '安装并使用外置组件。', 'docs/wallpaper-engine'],
     ['故障排除', 'NVIDIA、Flatpak、日志和调试。', 'docs/troubleshooting'],
   ],
   integration: {
@@ -629,6 +722,7 @@ const zh: Copy = {
     pause: '自动暂停',
     yes: '支持',
     no: '不支持',
+    scrollHint: '横向滚动以查看所有列',
   },
   doc: {
     installation: [
@@ -649,10 +743,26 @@ const zh: Copy = {
     troubleshooting: [
       'NVIDIA Web 壁纸：在网页渲染器设置中关闭 shared_texture_enabled。',
       'NVIDIA 视频解码：使用 nvidia-vaapi-driver 通过 VA-API 提供 NVDEC；没有独立 NVDEC 后端。',
-      "Flatpak 媒体信息：为 org.waywallen.waywallen 授予 --talk-name='org.mpris.MediaPlayer2.*'。",
-      '日志：停止守护进程，然后使用 RSTD_LOG=debug 和 RUST_LOG=debug,zbus=warn 启动。',
     ],
   },
+  troubleshootingDetails: [
+    [
+      'Flatpak 媒体权限',
+      'Flatpak 需要访问 MPRIS D-Bus 服务才能读取当前播放曲目信息。为当前用户授予权限：',
+    ],
+    [
+      '收集日志',
+      '先停止正在运行的 Waywallen 守护进程，然后启用详细的 Rust 和 zbus 日志，并从同一终端启动 Waywallen：',
+    ],
+    [
+      '在 Flatpak 中调试',
+      '安装对应的 Flatpak Debug 包，打开开发 shell，并通过 GDB 启动 Waywallen。若询问 debuginfod，请拒绝；复现问题后获取 backtrace：',
+    ],
+    [
+      '调试 core dump',
+      '也可以导出现有的 core dump，并在 Flatpak 开发环境中使用 Waywallen 调试符号打开：',
+    ],
+  ],
   faq: [
     [
       '硬件视频解码如何工作？',
@@ -660,10 +770,10 @@ const zh: Copy = {
     ],
     [
       '是否支持 Wallpaper Engine 壁纸？',
-      '支持。第三方 open-wallpaper-engine 插件提供 Scene 和 Web 支持。',
+      '支持。与 Waywallen 同步维护的外置 open-wallpaper-engine 组件提供 Scene 和 Web 支持。',
     ],
     [
-      '如何安装第三方插件？',
+      '如何安装外置组件？',
       '下载 ZIP 并在插件页面安装，Waywallen 会提示后续更新。',
     ],
     [

@@ -16,6 +16,41 @@ const copy = content[locale];
           height="32"
         /><span>Waywallen</span></a
       ><p>{copy.footer}</p>
+      <div class="footer-support">
+        <a
+          class="support-link sponsor-link"
+          href="https://ko-fi.com/hypengw"
+          target="_blank"
+          rel="noopener noreferrer">♥ {copy.support.sponsor}</a
+        >
+        <a
+          class="support-link"
+          href="https://github.com/waywallen/waywallen/compare"
+          target="_blank"
+          rel="noopener noreferrer">{copy.support.contribute} →</a
+        >
+        <a
+          class="support-link"
+          href="https://github.com/waywallen/waywallen/issues"
+          target="_blank"
+          rel="noopener noreferrer">{copy.support.reportBug} →</a
+        >
+      </div>
+      <p class="footer-credits">
+        {copy.credits.developer}
+        {' '}
+        <a
+          href="https://github.com/hypengw"
+          target="_blank"
+          rel="noopener noreferrer">hypengw</a
+        ><span aria-hidden="true"> · </span>{copy.credits.website}
+        {' '}
+        <a
+          href="https://github.com/CatSema"
+          target="_blank"
+          rel="noopener noreferrer">CatSema</a
+        >
+      </p>
     </div><nav aria-label="Footer">
       <a href={route(locale, 'docs')}>{copy.nav.docs}</a><a
         href={route(locale, 'faq')}>FAQ</a

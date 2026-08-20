@@ -28,6 +28,32 @@ const integrations = [
   ['Sway', 'layer_shell', true, false],
   ['COSMIC', 'layer_shell', true, false],
 ] as const;
+const integrationLinks = {
+  'waywallen-display': 'https://github.com/waywallen/waywallen-display/',
+  layer_shell:
+    'https://github.com/waywallen/waywallen-display/tree/main/src/bin/layer_shell',
+} as const;
+const troubleshootingCommands = [
+  `flatpak override --user \\
+  --talk-name='org.mpris.MediaPlayer2.*' \\
+  org.waywallen.waywallen`,
+  `export RSTD_LOG=debug RUST_LOG=debug,zbus=warn
+./waywallen`,
+  `flatpak install org.waywallen.waywallen.Debug
+flatpak run --devel --command=bash org.waywallen.waywallen
+
+gdb waywallen
+(gdb) run
+Enable debuginfod for this session? (y or [n]) n
+
+# Reproduce the problem, then get the stack trace
+(gdb) bt`,
+  `coredumpctl dump <id> -o core.save
+flatpak run --devel --filesystem=host --command=bash \\
+  org.waywallen.waywallen
+
+gdb waywallen core.save`,
+] as const;
 const external = {
   AppImage: 'https://github.com/waywallen/waywallen/releases/latest',
   Flatpak: 'https://flathub.org/apps/org.waywallen.waywallen',
@@ -154,6 +180,9 @@ const docKey =
                 alt={copy.screenshotText[1][0]}
                 loading="lazy"
               />
+              <span class="screenshot-teaser-action">
+                {copy.sections.galleryAction} →
+              </span>
             </a>
           </>
         </section>
@@ -222,11 +251,11 @@ const docKey =
           </section>
         )}
         {slug === 'plugins' && (
-          <section class="section card-grid">
+          <section class="section card-grid plugin-grid">
             {copy.pluginText.map(([title, body], i) => (
               <article class="action-card">
                 <span class="status-chip">
-                  {i === 3 ? 'Third-party' : 'Official'}
+                  {i === 3 ? copy.pluginLabels[1] : copy.pluginLabels[0]}
                 </span>
                 <h2>{title}</h2>
                 <p>{body}</p>
@@ -297,13 +326,17 @@ const docKey =
                 </a>
               )}
               {slug === 'docs/troubleshooting' && (
-                <pre>
-                  <code>
-                    flatpak override --user
-                    --talk-name='org.mpris.MediaPlayer2.*'
-                    org.waywallen.waywallen
-                  </code>
-                </pre>
+                <div class="troubleshooting-details">
+                  {copy.troubleshootingDetails.map(([title, body], i) => (
+                    <section>
+                      <h3>{title}</h3>
+                      <p>{body}</p>
+                      <pre>
+                        <code>{troubleshootingCommands[i]}</code>
+                      </pre>
+                    </section>
+                  ))}
+                </div>
               )}
             </article>
           </section>
@@ -319,7 +352,13 @@ const docKey =
           </section>
         )}
         {(slug === 'features' || slug === 'docs/desktop-integration') && (
-          <section class="section compatibility">
+          <section
+            class:list={[
+              'section',
+              'compatibility',
+              slug === 'docs/desktop-integration' && 'docs-compatibility',
+            ]}
+          >
             <div class="section-heading">
               <div>
                 <p class="eyebrow">Linux</p>
@@ -327,7 +366,13 @@ const docKey =
               </div>
               <p>{copy.sections.desktopsBody}</p>
             </div>
-            <div class="table-wrap">
+            <p class="table-scroll-hint">{copy.integration.scrollHint}</p>
+            <div
+              class="table-wrap"
+              role="region"
+              aria-label={copy.sections.desktops}
+              tabindex="0"
+            >
               <table>
                 <thead>
                   <tr>
@@ -341,7 +386,16 @@ const docKey =
                   {integrations.map(([desktop, integration, mouse, pause]) => (
                     <tr>
                       <th>{desktop}</th>
-                      <td>{integration}</td>
+                      <td>
+                        <a
+                          class="integration-link"
+                          href={integrationLinks[integration]}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {integration}
+                        </a>
+                      </td>
                       <td>
                         <span class:list={['support', mouse ? 'yes' : 'no']}>
                           {mouse ? copy.integration.yes : copy.integration.no}

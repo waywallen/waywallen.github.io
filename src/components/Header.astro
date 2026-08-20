@@ -57,15 +57,33 @@ const nav = ['features', 'screenshots', 'plugins', 'docs'] as const;
             }</select
           ></label
         >
-        <label class="select-control theme-control"
-          ><span class="sr-only">{copy.theme}</span><select
-            aria-label={copy.theme}
-            data-theme-select
-            ><option value="system">{copy.themes[0]}</option><option
-              value="light">{copy.themes[1]}</option
-            ><option value="dark">{copy.themes[2]}</option></select
-          ></label
+        <button
+          class="theme-button"
+          type="button"
+          data-theme-toggle
+          data-theme-label={copy.theme}
+          data-theme-options={JSON.stringify(copy.themes)}
+          aria-label={copy.theme}
+          title={copy.theme}
         >
+          <svg
+            class="theme-icon light-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="4"></circle><path
+              d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"
+            ></path>
+          </svg>
+          <svg
+            class="theme-icon dark-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M20 15.1A8.5 8.5 0 0 1 8.9 4a8.5 8.5 0 1 0 11.1 11.1Z"
+            ></path>
+          </svg>
+        </button>
         <a
           class="text-action"
           href="https://github.com/waywallen/waywallen"
