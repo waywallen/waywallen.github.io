@@ -34,6 +34,36 @@ const ogImage = new URL('/images/social/waywallen-og.svg', Astro.site);
     <script is:inline>
       (() => {
         try {
+          if (
+            document.documentElement.lang !== 'en' ||
+            location.pathname !== '/'
+          )
+            return;
+          const saved = localStorage.getItem('waywallen-locale');
+          const preferred =
+            saved ||
+            navigator.languages
+              .map((language) => language.toLowerCase())
+              .find(
+                (language) =>
+                  language.startsWith('ru') || language.startsWith('zh'),
+              );
+          const locale = preferred?.startsWith('ru')
+            ? 'ru'
+            : preferred?.startsWith('zh')
+              ? 'zh-cn'
+              : 'en';
+          if (locale !== 'en') {
+            location.replace(
+              '/' + locale + '/' + location.search + location.hash,
+            );
+          }
+        } catch {}
+      })();
+    </script>
+    <script is:inline>
+      (() => {
+        try {
           const saved = localStorage.getItem('waywallen-theme');
           document.documentElement.dataset.theme =
             saved === 'light' || saved === 'dark'
@@ -121,6 +151,15 @@ const ogImage = new URL('/images/social/waywallen-og.svg', Astro.site);
         localStorage.setItem('waywallen-theme', next);
         apply(next);
         updateButton(next);
+      });
+      const languageSelect = document.querySelector<HTMLSelectElement>(
+        '[data-language-select]',
+      );
+      languageSelect?.addEventListener('change', () => {
+        const option = languageSelect.selectedOptions[0];
+        if (!option) return;
+        localStorage.setItem('waywallen-locale', option.dataset.locale || 'en');
+        window.location.href = option.value;
       });
       const toggle =
         document.querySelector<HTMLButtonElement>('[data-menu-toggle]');

@@ -44,11 +44,11 @@ const nav = ['features', 'screenshots', 'plugins', 'docs'] as const;
           ><span class="sr-only">{copy.language}</span><select
             aria-label={copy.language}
             data-language-select
-            onchange="window.location.href=this.value"
             >{
               locales.map((item) => (
                 <option
                   value={localizedPath(pathname, item)}
+                  data-locale={item}
                   selected={locale === item}
                 >
                   {localeNames[item]}
