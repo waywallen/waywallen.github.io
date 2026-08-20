@@ -1,0 +1,81 @@
+---
+import { content } from '../i18n/content';
+import {
+  localeNames,
+  locales,
+  localizedPath,
+  route,
+  type Locale,
+} from '../i18n/config';
+interface Props {
+  locale: Locale;
+  pathname: string;
+}
+const { locale, pathname } = Astro.props;
+const copy = content[locale];
+const nav = ['features', 'screenshots', 'plugins', 'docs'] as const;
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href={route(locale)} aria-label="Waywallen home"
+      ><img
+        src="/images/logo/waywallen.svg"
+        alt=""
+        width="36"
+        height="36"
+      /><span>Waywallen</span></a
+    >
+    <button
+      class="icon-button menu-button"
+      data-menu-toggle
+      aria-expanded="false"
+      aria-controls="site-nav"
+      ><span class="menu-lines" aria-hidden="true"></span><span class="sr-only"
+        >{copy.menu}</span
+      ></button
+    >
+    <nav id="site-nav" class="site-nav" data-mobile-nav aria-label={copy.menu}>
+      <div class="nav-links">
+        {nav.map((item) => <a href={route(locale, item)}>{copy.nav[item]}</a>)}
+      </div>
+      <div class="header-actions">
+        <label class="select-control"
+          ><span class="sr-only">{copy.language}</span><select
+            aria-label={copy.language}
+            data-language-select
+            onchange="window.location.href=this.value"
+            >{
+              locales.map((item) => (
+                <option
+                  value={localizedPath(pathname, item)}
+                  selected={locale === item}
+                >
+                  {localeNames[item]}
+                </option>
+              ))
+            }</select
+          ></label
+        >
+        <label class="select-control theme-control"
+          ><span class="sr-only">{copy.theme}</span><select
+            aria-label={copy.theme}
+            data-theme-select
+            ><option value="system">{copy.themes[0]}</option><option
+              value="light">{copy.themes[1]}</option
+            ><option value="dark">{copy.themes[2]}</option></select
+          ></label
+        >
+        <a
+          class="text-action"
+          href="https://github.com/waywallen/waywallen"
+          target="_blank"
+          rel="noopener noreferrer">{copy.github}</a
+        >
+        <a class="button primary compact" href={route(locale, 'download')}
+          >{copy.nav.download}</a
+        >
+      </div>
+    </nav>
+  </div>
+</header>

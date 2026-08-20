@@ -1,0 +1,14 @@
+---
+import PageView from '../../components/PageView.astro';
+import { routeSlugs, type Locale, type RouteSlug } from '../../i18n/config';
+export function getStaticPaths() {
+  return ['ru', 'zh-cn'].flatMap((locale) =>
+    routeSlugs
+      .filter(Boolean)
+      .map((slug) => ({ params: { locale, slug }, props: { locale, slug } })),
+  );
+}
+const { locale, slug } = Astro.props as { locale: Locale; slug: RouteSlug };
+---
+
+<PageView locale={locale} slug={slug} />

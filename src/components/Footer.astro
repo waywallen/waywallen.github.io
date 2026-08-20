@@ -1,0 +1,33 @@
+---
+import { content } from '../i18n/content';
+import { route, type Locale } from '../i18n/config';
+const { locale } = Astro.props as { locale: Locale };
+const copy = content[locale];
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <a class="brand" href={route(locale)}
+        ><img
+          src="/images/logo/waywallen.svg"
+          alt=""
+          width="32"
+          height="32"
+        /><span>Waywallen</span></a
+      ><p>{copy.footer}</p>
+    </div><nav aria-label="Footer">
+      <a href={route(locale, 'docs')}>{copy.nav.docs}</a><a
+        href={route(locale, 'faq')}>FAQ</a
+      ><a
+        href="https://github.com/waywallen/waywallen"
+        target="_blank"
+        rel="noopener noreferrer">GitHub</a
+      ><a
+        href="https://discord.gg/2xEdmMrhRF"
+        target="_blank"
+        rel="noopener noreferrer">Discord</a
+      >
+    </nav>
+  </div>
+</footer>

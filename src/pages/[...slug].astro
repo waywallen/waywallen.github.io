@@ -1,0 +1,12 @@
+---
+import PageView from '../components/PageView.astro';
+import { routeSlugs, type RouteSlug } from '../i18n/config';
+export function getStaticPaths() {
+  return routeSlugs
+    .filter(Boolean)
+    .map((slug) => ({ params: { slug }, props: { slug } }));
+}
+const { slug } = Astro.props as { slug: RouteSlug };
+---
+
+<PageView locale="en" slug={slug} />
