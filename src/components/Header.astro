@@ -1,0 +1,97 @@
+---
+import { content } from '../i18n/content';
+import { assets, links } from '../config/site';
+import {
+  localeNames,
+  locales,
+  localizedPath,
+  route,
+  type Locale,
+} from '../i18n/config';
+interface Props {
+  locale: Locale;
+  pathname: string;
+}
+const { locale, pathname } = Astro.props;
+const copy = content[locale];
+const nav = ['features', 'screenshots', 'plugins', 'docs'] as const;
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href={route(locale)} aria-label="Waywallen home"
+      ><img src={assets.logo} alt="" width="36" height="36" /><span
+        >Waywallen</span
+      ></a
+    >
+    <button
+      class="icon-button menu-button"
+      data-menu-toggle
+      aria-expanded="false"
+      aria-controls="site-nav"
+      ><span class="menu-lines" aria-hidden="true"></span><span class="sr-only"
+        >{copy.menu}</span
+      ></button
+    >
+    <nav id="site-nav" class="site-nav" data-mobile-nav aria-label={copy.menu}>
+      <div class="nav-links">
+        {nav.map((item) => <a href={route(locale, item)}>{copy.nav[item]}</a>)}
+      </div>
+      <div class="header-actions">
+        <label class="select-control"
+          ><span class="sr-only">{copy.language}</span><select
+            aria-label={copy.language}
+            data-language-select
+            >{
+              locales.map((item) => (
+                <option
+                  value={localizedPath(pathname, item)}
+                  data-locale={item}
+                  selected={locale === item}
+                >
+                  {localeNames[item]}
+                </option>
+              ))
+            }</select
+          ></label
+        >
+        <button
+          class="theme-button"
+          type="button"
+          data-theme-toggle
+          data-theme-label={copy.theme}
+          data-theme-options={JSON.stringify(copy.themes)}
+          aria-label={copy.theme}
+          title={copy.theme}
+        >
+          <svg
+            class="theme-icon light-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="4"></circle><path
+              d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"
+            ></path>
+          </svg>
+          <svg
+            class="theme-icon dark-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M20 15.1A8.5 8.5 0 0 1 8.9 4a8.5 8.5 0 1 0 11.1 11.1Z"
+            ></path>
+          </svg>
+        </button>
+        <a
+          class="text-action"
+          href={links.repository}
+          target="_blank"
+          rel="noopener noreferrer">{copy.github}</a
+        >
+        <a class="button primary compact" href={route(locale, 'download')}
+          >{copy.nav.download}</a
+        >
+      </div>
+    </nav>
+  </div>
+</header>

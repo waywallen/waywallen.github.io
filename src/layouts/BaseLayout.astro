@@ -1,0 +1,243 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { assets } from '../config/site';
+import { content } from '../i18n/content';
+import {
+  htmlLang,
+  locales,
+  route,
+  type Locale,
+  type RouteSlug,
+} from '../i18n/config';
+import '../styles/global.css';
+
+interface Props {
+  locale: Locale;
+  slug: RouteSlug;
+  is404?: boolean;
+  detect404Locale?: boolean;
+  titleOverride?: string;
+  descriptionOverride?: string;
+}
+const {
+  locale,
+  slug,
+  is404 = false,
+  detect404Locale = false,
+  titleOverride,
+  descriptionOverride,
+} = Astro.props;
+const copy = content[locale];
+const page = copy.pages[slug];
+const canonical = new URL(route(locale, slug), Astro.site);
+const pageTitle = titleOverride ?? page.title;
+const description = descriptionOverride ?? page.description;
+const title =
+  slug === '' && !titleOverride
+    ? `Waywallen — ${pageTitle}`
+    : `${pageTitle} — Waywallen`;
+const ogImage = new URL(assets.socialImage, Astro.site);
+---
+
+<!doctype html>
+<html
+  lang={htmlLang[locale]}
+  data-theme="system"
+  data-error-page={detect404Locale || undefined}
+  data-error-ru={detect404Locale ? route('ru', '404') : undefined}
+  data-error-zh-cn={detect404Locale ? route('zh-cn', '404') : undefined}
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#6750a4" />
+    <script is:inline>
+      (() => {
+        try {
+          const root = document.documentElement;
+          if (root.dataset.errorPage !== 'true') return;
+          const firstPathPart = location.pathname.split('/').filter(Boolean)[0];
+          const saved = localStorage.getItem('waywallen-locale');
+          const locale =
+            firstPathPart === 'ru' || firstPathPart === 'zh-cn'
+              ? firstPathPart
+              : saved;
+          const target =
+            locale === 'ru'
+              ? root.dataset.errorRu
+              : locale === 'zh-cn'
+                ? root.dataset.errorZhCn
+                : undefined;
+          if (target) location.replace(target);
+        } catch {}
+      })();
+    </script>
+    <script is:inline>
+      (() => {
+        try {
+          const saved = localStorage.getItem('waywallen-theme');
+          document.documentElement.dataset.theme =
+            saved === 'light' || saved === 'dark'
+              ? saved
+              : matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+        } catch {}
+      })();
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {
+      is404 ? (
+        <meta name="robots" content="noindex" />
+      ) : (
+        <link rel="canonical" href={canonical} />
+      )
+    }
+    {
+      !is404 &&
+        locales.map((item) => (
+          <link
+            rel="alternate"
+            hreflang={htmlLang[item]}
+            href={new URL(route(item, slug), Astro.site)}
+          />
+        ))
+    }
+    {
+      !is404 && (
+        <link
+          rel="alternate"
+          hreflang="x-default"
+          href={new URL(route('en', slug), Astro.site)}
+        />
+      )
+    }
+    <script is:inline>
+      (() => {
+        try {
+          if (
+            document.documentElement.lang !== 'en' ||
+            location.pathname !== '/'
+          )
+            return;
+          const saved = localStorage.getItem('waywallen-locale');
+          const preferred =
+            saved ||
+            navigator.languages
+              .map((language) => language.toLowerCase())
+              .find(
+                (language) =>
+                  language.startsWith('ru') || language.startsWith('zh'),
+              );
+          const locale = preferred?.startsWith('ru')
+            ? 'ru'
+            : preferred?.startsWith('zh')
+              ? 'zh-cn'
+              : 'en';
+          if (locale !== 'en') {
+            const hreflang = locale === 'zh-cn' ? 'zh-CN' : locale;
+            const alternate = document.querySelector(
+              `link[rel="alternate"][hreflang="${hreflang}"]`,
+            );
+            if (alternate instanceof HTMLLinkElement) {
+              const target = new URL(alternate.href);
+              location.replace(
+                target.pathname + location.search + location.hash,
+              );
+            }
+          }
+        } catch {}
+      })();
+    </script>
+    <link rel="icon" href={assets.favicon} type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Waywallen" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={htmlLang[locale].replace('-', '_')} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content"
+      >{
+        locale === 'ru'
+          ? 'К содержимому'
+          : locale === 'zh-cn'
+            ? '跳到正文'
+            : 'Skip to content'
+      }</a
+    >
+    <Header locale={locale} pathname={Astro.url.pathname} />
+    <main id="main-content"><slot /></main>
+    <Footer locale={locale} />
+    <script>
+      const root = document.documentElement;
+      const media = matchMedia('(prefers-color-scheme: dark)');
+      const themeButton = document.querySelector<HTMLButtonElement>(
+        '[data-theme-toggle]',
+      );
+      const themes = ['light', 'dark'] as const;
+      const apply = (theme: string) => {
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+      };
+      const updateButton = (theme: string) => {
+        if (!themeButton) return;
+        const labels = JSON.parse(themeButton.dataset.themeOptions || '[]');
+        const index = themes.indexOf(theme as (typeof themes)[number]);
+        const label = `${themeButton.dataset.themeLabel}: ${labels[index + 1]}`;
+        themeButton.setAttribute('aria-label', label);
+        themeButton.title = label;
+      };
+      const saved = localStorage.getItem('waywallen-theme');
+      const initial =
+        saved === 'light' || saved === 'dark'
+          ? saved
+          : media.matches
+            ? 'dark'
+            : 'light';
+      apply(initial);
+      updateButton(initial);
+      themeButton?.addEventListener('click', () => {
+        const current = root.dataset.theme || initial;
+        const next = current === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('waywallen-theme', next);
+        apply(next);
+        updateButton(next);
+      });
+      const languageSelect = document.querySelector<HTMLSelectElement>(
+        '[data-language-select]',
+      );
+      languageSelect?.addEventListener('change', () => {
+        const option = languageSelect.selectedOptions[0];
+        if (!option) return;
+        localStorage.setItem('waywallen-locale', option.dataset.locale || 'en');
+        window.location.href = option.value;
+      });
+      const toggle =
+        document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+      const nav = document.querySelector<HTMLElement>('[data-mobile-nav]');
+      toggle?.addEventListener('click', () => {
+        const open = toggle.getAttribute('aria-expanded') !== 'true';
+        toggle.setAttribute('aria-expanded', String(open));
+        nav?.toggleAttribute('data-open', open);
+        document.body.classList.toggle('menu-open', open);
+      });
+      addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape' || !nav?.hasAttribute('data-open')) return;
+        toggle?.setAttribute('aria-expanded', 'false');
+        nav.removeAttribute('data-open');
+        document.body.classList.remove('menu-open');
+        toggle?.focus();
+      });
+    </script>
+  </body>
+</html>

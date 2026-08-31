@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1d1b20"/>
+  <circle cx="1020" cy="80" r="360" fill="#4f378b"/>
+  <circle cx="1120" cy="650" r="440" fill="#6750a4" opacity=".6"/>
+  <g transform="translate(92 115) scale(.09375)">
+    <rect width="1024" height="1024" rx="230" fill="#2a0e07"/>
+    <g transform="translate(512 512)">
+      <rect x="-410" y="-410" width="460" height="300" rx="70" fill="#d85a30"/>
+      <rect x="110" y="-410" width="300" height="460" rx="70" fill="#f0997b"/>
+      <rect x="-410" y="-50" width="300" height="460" rx="70" fill="#993c1d"/>
+      <rect x="-50" y="110" width="460" height="300" rx="70" fill="#993c1d" opacity=".85"/>
+      <g fill="#2a0e07">
+        <circle r="200"/>
+        <rect x="-75" y="-260" width="150" height="130" rx="35"/>
+        <rect x="-75" y="-260" width="150" height="130" rx="35" transform="rotate(51.43)"/>
+        <rect x="-75" y="-260" width="150" height="130" rx="35" transform="rotate(102.86)"/>
+        <rect x="-75" y="-260" width="150" height="130" rx="35" transform="rotate(154.29)"/>
+        <rect x="-75" y="-260" width="150" height="130" rx="35" transform="rotate(205.71)"/>
+        <rect x="-75" y="-260" width="150" height="130" rx="35" transform="rotate(257.14)"/>
+        <rect x="-75" y="-260" width="150" height="130" rx="35" transform="rotate(308.57)"/>
+      </g>
+      <g fill="#f0997b">
+        <circle r="160"/>
+        <rect x="-35" y="-220" width="70" height="90" rx="20"/>
+        <rect x="-35" y="-220" width="70" height="90" rx="20" transform="rotate(51.43)"/>
+        <rect x="-35" y="-220" width="70" height="90" rx="20" transform="rotate(102.86)"/>
+        <rect x="-35" y="-220" width="70" height="90" rx="20" transform="rotate(154.29)"/>
+        <rect x="-35" y="-220" width="70" height="90" rx="20" transform="rotate(205.71)"/>
+        <rect x="-35" y="-220" width="70" height="90" rx="20" transform="rotate(257.14)"/>
+        <rect x="-35" y="-220" width="70" height="90" rx="20" transform="rotate(308.57)"/>
+      </g>
+      <circle r="110" fill="#2a0e07"/>
+      <circle r="80" fill="#f0997b"/>
+      <circle r="40" fill="#2a0e07"/>
+    </g>
+  </g>
+  <text x="92" y="300" fill="#e6e0e9" font-family="system-ui,sans-serif" font-size="92" font-weight="750">Waywallen</text>
+  <text x="96" y="380" fill="#d0bcff" font-family="system-ui,sans-serif" font-size="38">Dynamic wallpapers for Linux</text>
+  <text x="96" y="510" fill="#cac4d0" font-family="system-ui,sans-serif" font-size="25">waywallen.org</text>
+</svg>

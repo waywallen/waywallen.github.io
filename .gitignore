@@ -1,0 +1,24 @@
+node_modules/
+dist/
+.astro/
+.agents/
+.codex/
+
+# Local environment and generated reports
+.env
+.env.*
+!.env.example
+coverage/
+*.tsbuildinfo
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs
+*.log

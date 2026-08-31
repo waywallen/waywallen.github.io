@@ -1,0 +1,492 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { assets, links } from '../config/site';
+import { getContributors } from '../data/contributors';
+import { content } from '../i18n/content';
+import { route, type Locale, type RouteSlug } from '../i18n/config';
+interface Props {
+  locale: Locale;
+  slug: RouteSlug;
+}
+const { locale, slug } = Astro.props;
+const copy = content[locale];
+const page = copy.pages[slug];
+const contributors = slug === 'contributors' ? await getContributors() : [];
+const contributionLabel = (count: number) => {
+  const category = new Intl.PluralRules(locale).select(count);
+  const index = category === 'one' ? 0 : category === 'few' ? 1 : 2;
+  return copy.contributors.contributionForms[index];
+};
+const integrations = [
+  ['KDE Plasma', 'waywallen-display', true, true],
+  ['GNOME', 'waywallen-display', true, true],
+  ['Hyprland', 'layer_shell', true, true],
+  ['Niri', 'layer_shell', true, true],
+  ['Wayfire', 'layer_shell', true, true],
+  ['Sway', 'layer_shell', true, false],
+  ['COSMIC', 'layer_shell', true, false],
+] as const;
+const integrationLinks = {
+  'waywallen-display': links.display,
+  layer_shell: links.layerShell,
+} as const;
+const troubleshootingCommands = [
+  `flatpak override --user \\
+  --talk-name='org.mpris.MediaPlayer2.*' \\
+  org.waywallen.waywallen`,
+  `export RSTD_LOG=debug RUST_LOG=debug,zbus=warn
+./waywallen`,
+  `flatpak install org.waywallen.waywallen.Debug
+flatpak run --devel --command=bash org.waywallen.waywallen
+
+gdb waywallen
+(gdb) run
+Enable debuginfod for this session? (y or [n]) n
+
+# Reproduce the problem, then get the stack trace
+(gdb) bt`,
+  `coredumpctl dump <id> -o core.save
+flatpak run --devel --filesystem=host --command=bash \\
+  org.waywallen.waywallen
+
+gdb waywallen core.save`,
+] as const;
+const isDocsArticle = slug.startsWith('docs/');
+const docKey =
+  slug === 'docs/installation'
+    ? 'installation'
+    : slug === 'docs/desktop-integration'
+      ? 'desktop'
+      : slug === 'docs/wallpaper-engine'
+        ? 'wallpaper'
+        : 'troubleshooting';
+---
+
+<BaseLayout locale={locale} slug={slug}>
+  {
+    slug === '' ? (
+      <>
+        <section class="hero section">
+          <>
+            <div class="hero-copy">
+              <>
+                <p class="eyebrow">{copy.hero.eyebrow}</p>
+                <h1>{copy.hero.title}</h1>
+                <p class="hero-body">{copy.hero.body}</p>
+                <div class="button-row">
+                  <>
+                    <a class="button primary" href={route(locale, 'download')}>
+                      {copy.hero.download}
+                    </a>
+                    <a
+                      class="button tonal"
+                      href={links.repository}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {copy.hero.github}
+                    </a>
+                  </>
+                </div>
+              </>
+            </div>
+            <div class="hero-visual">
+              <>
+                <div class="window-chrome">
+                  <>
+                    <span />
+                    <span />
+                    <span />
+                    <strong>waywallen</strong>
+                  </>
+                </div>
+                <img
+                  src={assets.screenshots[0].src}
+                  width={assets.screenshots[0].width}
+                  height={assets.screenshots[0].height}
+                  alt={copy.screenshotText[0][0]}
+                  fetchpriority="high"
+                />
+              </>
+            </div>
+          </>
+        </section>
+        <section class="section">
+          <>
+            <div class="section-heading">
+              <>
+                <div>
+                  <>
+                    <p class="eyebrow">{copy.nav.features}</p>
+                    <h2>{copy.sections.highlights}</h2>
+                  </>
+                </div>
+                <p>{copy.sections.highlightsBody}</p>
+              </>
+            </div>
+            <div class="feature-grid">
+              {copy.featureText.slice(0, 4).map(([title, body], i) => (
+                <article class:list={['feature-card', i === 0 && 'featured']}>
+                  <span class="feature-number">0{i + 1}</span>
+                  <h3>{title}</h3>
+                  <p>{body}</p>
+                </article>
+              ))}
+            </div>
+          </>
+        </section>
+        <section class="section desktop-band">
+          <>
+            <div>
+              <>
+                <p class="eyebrow">Linux</p>
+                <h2>{copy.sections.desktops}</h2>
+                <p>{copy.sections.desktopsBody}</p>
+              </>
+            </div>
+            <div class="chip-cloud">
+              {integrations.map(([name]) => (
+                <span class="chip">{name}</span>
+              ))}
+            </div>
+          </>
+        </section>
+        <section class="section">
+          <>
+            <div class="section-heading">
+              <>
+                <div>
+                  <>
+                    <p class="eyebrow">{copy.nav.screenshots}</p>
+                    <h2>{copy.sections.gallery}</h2>
+                  </>
+                </div>
+                <p>{copy.sections.galleryBody}</p>
+              </>
+            </div>
+            <a class="screenshot-teaser" href={route(locale, 'screenshots')}>
+              <img
+                src={assets.screenshots[1].src}
+                width={assets.screenshots[1].width}
+                height={assets.screenshots[1].height}
+                alt={copy.screenshotText[1][0]}
+                loading="lazy"
+              />
+              <span class="screenshot-teaser-action">
+                {copy.sections.galleryAction} →
+              </span>
+            </a>
+          </>
+        </section>
+      </>
+    ) : (
+      <>
+        <header class="page-hero section">
+          <>
+            <p class="eyebrow">Waywallen</p>
+            <h1>{page.title}</h1>
+            <p>{page.description}</p>
+          </>
+        </header>
+        {slug === 'features' && (
+          <section class="section feature-grid all-features">
+            {copy.featureText.map(([title, body], i) => (
+              <article class="feature-card">
+                <span class="feature-number">0{i + 1}</span>
+                <h2>{title}</h2>
+                <p>{body}</p>
+              </article>
+            ))}
+          </section>
+        )}
+        {slug === 'screenshots' && (
+          <section class="section gallery-grid">
+            {copy.screenshotText.map(([title, body], i) => (
+              <figure class="screenshot-card">
+                <img
+                  src={assets.screenshots[i].src}
+                  width={assets.screenshots[i].width}
+                  height={assets.screenshots[i].height}
+                  alt={title}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                />
+                <figcaption>
+                  <h2>{title}</h2>
+                  <p>{body}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </section>
+        )}
+        {slug === 'download' && (
+          <section class="section card-grid">
+            {copy.downloadText.map(([title, body, action], i) => (
+              <article class="action-card">
+                <h2>{title}</h2>
+                <p>{body}</p>
+                <a
+                  class="button tonal"
+                  href={
+                    i === 0
+                      ? links.releases
+                      : i === 1
+                        ? links.flatpak
+                        : links.buildGuide
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {action}
+                </a>
+              </article>
+            ))}
+          </section>
+        )}
+        {slug === 'plugins' && (
+          <section class="section card-grid plugin-grid">
+            {copy.pluginText.map(([title, body], i) => (
+              <article class="action-card">
+                <span class="status-chip">
+                  {i === 3 ? copy.pluginLabels[1] : copy.pluginLabels[0]}
+                </span>
+                <h2>{title}</h2>
+                <p>{body}</p>
+                {i === 3 && (
+                  <a
+                    class="text-link"
+                    href={links.wallpaperEngine}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    GitHub →
+                  </a>
+                )}
+              </article>
+            ))}
+          </section>
+        )}
+        {slug === 'docs' && (
+          <section class="section docs-grid">
+            {copy.docsCards.map(([title, body, path]) => (
+              <a class="docs-card" href={route(locale, path)}>
+                <h2>{title}</h2>
+                <p>{body}</p>
+                <span aria-hidden="true">→</span>
+              </a>
+            ))}
+          </section>
+        )}
+        {isDocsArticle && (
+          <section class="section docs-layout">
+            <aside>
+              <nav aria-label={copy.nav.docs}>
+                {copy.docsCards.map(([title, , path]) => (
+                  <a
+                    class:list={{ active: path === slug }}
+                    href={route(locale, path)}
+                  >
+                    {title}
+                  </a>
+                ))}
+              </nav>
+            </aside>
+            <article class="prose">
+              <h2>{page.title}</h2>
+              <ol>
+                {copy.doc[docKey].map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ol>
+              {slug === 'docs/desktop-integration' && (
+                <a
+                  class="button tonal"
+                  href={links.display}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  waywallen-display
+                </a>
+              )}
+              {slug === 'docs/wallpaper-engine' && (
+                <a
+                  class="button tonal"
+                  href={links.wallpaperEngineReleases}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  open-wallpaper-engine
+                </a>
+              )}
+              {slug === 'docs/troubleshooting' && (
+                <div class="troubleshooting-details">
+                  {copy.troubleshootingDetails.map(([title, body], i) => (
+                    <section>
+                      <h3>{title}</h3>
+                      <p>{body}</p>
+                      <pre>
+                        <code>{troubleshootingCommands[i]}</code>
+                      </pre>
+                    </section>
+                  ))}
+                </div>
+              )}
+            </article>
+          </section>
+        )}
+        {slug === 'faq' && (
+          <section class="section faq-list">
+            {copy.faq.map(([question, answer]) => (
+              <details>
+                <summary>{question}</summary>
+                <p>{answer}</p>
+              </details>
+            ))}
+          </section>
+        )}
+        {slug === 'contributors' && (
+          <>
+            <section class="section contributor-lead">
+              <a
+                class="lead-contributor"
+                href={links.developer}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src={
+                    contributors.find(({ login }) => login === 'hypengw')
+                      ?.avatar_url
+                  }
+                  width="112"
+                  height="112"
+                  alt=""
+                />
+                <span>
+                  <span class="eyebrow">{copy.contributors.lead}</span>
+                  <strong>hypengw</strong>
+                  <span>{copy.contributors.leadBody}</span>
+                </span>
+              </a>
+            </section>
+            <section class="section contributors-section">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Open source</p>
+                  <h2>{copy.contributors.community}</h2>
+                </div>
+                <p>{copy.contributors.description}</p>
+              </div>
+              <div class="contributors-grid">
+                {contributors
+                  .filter((contributor) => contributor.login !== 'hypengw')
+                  .map((contributor) => (
+                    <a
+                      class="contributor-card"
+                      href={contributor.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={contributor.avatar_url}
+                        width="72"
+                        height="72"
+                        alt=""
+                        loading="lazy"
+                      />
+                      <span>
+                        <strong>{contributor.login}</strong>
+                        <small>
+                          {contributor.contributions}{' '}
+                          {contributionLabel(contributor.contributions)}
+                        </small>
+                      </span>
+                    </a>
+                  ))}
+              </div>
+              <div class="contributors-actions">
+                <a
+                  class="button primary"
+                  href={links.contribute}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {copy.contributors.action}
+                </a>
+                <a
+                  class="button tonal"
+                  href={links.contributors}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {copy.contributors.github}
+                </a>
+              </div>
+            </section>
+          </>
+        )}
+        {(slug === 'features' || slug === 'docs/desktop-integration') && (
+          <section
+            class:list={[
+              'section',
+              'compatibility',
+              slug === 'docs/desktop-integration' && 'docs-compatibility',
+            ]}
+          >
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Linux</p>
+                <h2>{copy.sections.desktops}</h2>
+              </div>
+              <p>{copy.sections.desktopsBody}</p>
+            </div>
+            <p class="table-scroll-hint">{copy.integration.scrollHint}</p>
+            <div
+              class="table-wrap"
+              role="region"
+              aria-label={copy.sections.desktops}
+              tabindex="0"
+            >
+              <table>
+                <thead>
+                  <tr>
+                    <th>{copy.integration.desktop}</th>
+                    <th>{copy.integration.integration}</th>
+                    <th>{copy.integration.mouse}</th>
+                    <th>{copy.integration.pause}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {integrations.map(([desktop, integration, mouse, pause]) => (
+                    <tr>
+                      <th>{desktop}</th>
+                      <td>
+                        <a
+                          class="integration-link"
+                          href={integrationLinks[integration]}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {integration}
+                        </a>
+                      </td>
+                      <td>
+                        <span class:list={['support', mouse ? 'yes' : 'no']}>
+                          {mouse ? copy.integration.yes : copy.integration.no}
+                        </span>
+                      </td>
+                      <td>
+                        <span class:list={['support', pause ? 'yes' : 'no']}>
+                          {pause ? copy.integration.yes : copy.integration.no}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+      </>
+    )
+  }
+</BaseLayout>

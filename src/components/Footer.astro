@@ -1,0 +1,60 @@
+---
+import { content } from '../i18n/content';
+import { assets, links } from '../config/site';
+import { route, type Locale } from '../i18n/config';
+const { locale } = Astro.props as { locale: Locale };
+const copy = content[locale];
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <a class="brand" href={route(locale)}
+        ><img src={assets.logo} alt="" width="32" height="32" /><span
+          >Waywallen</span
+        ></a
+      ><p>{copy.footer}</p>
+      <div class="footer-support">
+        <a
+          class="support-link sponsor-link"
+          href={links.sponsor}
+          target="_blank"
+          rel="noopener noreferrer">♥ {copy.support.sponsor}</a
+        >
+        <a
+          class="support-link"
+          href={links.contribute}
+          target="_blank"
+          rel="noopener noreferrer">{copy.support.contribute} →</a
+        >
+        <a
+          class="support-link"
+          href={links.issues}
+          target="_blank"
+          rel="noopener noreferrer">{copy.support.reportBug} →</a
+        >
+      </div>
+      <p class="footer-credits">
+        {copy.credits.developer}
+        {' '}
+        <a href={links.developer} target="_blank" rel="noopener noreferrer"
+          >hypengw</a
+        ><span aria-hidden="true"> · </span>{copy.credits.website}
+        {' '}
+        <a href={links.websiteAuthor} target="_blank" rel="noopener noreferrer"
+          >CatSema</a
+        >
+      </p>
+    </div><nav aria-label="Footer">
+      <a href={route(locale, 'docs')}>{copy.nav.docs}</a><a
+        href={route(locale, 'faq')}>FAQ</a
+      ><a href={route(locale, 'contributors')}>{copy.contributors.title}</a><a
+        href={links.repository}
+        target="_blank"
+        rel="noopener noreferrer">GitHub</a
+      ><a href={links.discord} target="_blank" rel="noopener noreferrer"
+        >Discord</a
+      >
+    </nav>
+  </div>
+</footer>
